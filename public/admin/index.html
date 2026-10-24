@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveAgent - Admin & Agent Support Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Load Socket.IO client -->
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="admin-navbar">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+        </svg>
+      </div>
+      <div class="brand-title">
+        <h1>LiveAgent Portal</h1>
+        <span>Real-Time Customer Chat Hub</span>
+      </div>
+    </div>
+
+    <div class="navbar-actions">
+      <!-- Audio Notification Toggle -->
+      <button id="toggle-sound-btn" class="audio-toggle-btn active" title="Toggle audio notification for incoming messages">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+        <span id="sound-status-text">Sound: ON</span>
+      </button>
+
+      <!-- Test Sound Button -->
+      <button id="test-sound-btn" class="btn-secondary" title="Play sound preview">
+        🔔 Test Chime
+      </button>
+
+      <!-- Connection Status Indicator -->
+      <div class="status-badge" id="connection-status">
+        <span class="status-pulse"></span>
+        <span id="connection-text">Live Connected</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Workspace -->
+  <main class="dashboard-layout">
+    <!-- 1. Left Sidebar: Active Customer Conversations -->
+    <aside class="sidebar-conversations">
+      <div class="sidebar-search">
+        <input type="text" id="search-input" placeholder="Search visitors by name or id...">
+      </div>
+
+      <ul class="conversations-list" id="conversations-list">
+        <div class="empty-conversations" id="no-conversations-msg">
+          Waiting for website visitors to connect...
+        </div>
+      </ul>
+    </aside>
+
+    <!-- 2. Center: Chat Area -->
+    <section class="chat-workspace" id="chat-workspace">
+      <!-- Empty State when no chat selected -->
+      <div class="chat-empty-state" id="chat-empty-state">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+        </svg>
+        <h3>No Conversation Selected</h3>
+        <p>Select a visitor from the left sidebar to start live chatting.</p>
+      </div>
+
+      <!-- Active Chat Container -->
+      <div class="chat-active-view" id="chat-active-view">
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <div class="chat-header-user">
+            <div>
+              <h3 id="current-user-name">Visitor</h3>
+              <p id="current-user-status">Online</p>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <button class="btn-secondary" id="btn-close-chat" title="Close this customer session">
+              Mark Resolved / End Chat
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Message Stream -->
+        <div class="chat-stream" id="chat-stream">
+          <!-- Messages will be dynamically rendered here -->
+        </div>
+
+        <!-- Typing status bar -->
+        <div class="typing-bar" id="typing-bar"></div>
+
+        <!-- Quick Canned Responses -->
+        <div class="quick-responses">
+          <button class="quick-chip" data-text="Hello! How can I help you today?">👋 Hello!</button>
+          <button class="quick-chip" data-text="One moment please, let me check that for you.">⏳ Checking...</button>
+          <button class="quick-chip" data-text="Could you please share your order number or email?">📦 Order / Email</button>
+          <button class="quick-chip" data-text="Thank you for visiting! Let us know if you need anything else.">🙏 Thank you</button>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="chat-input-bar">
+          <textarea id="agent-input" placeholder="Type your reply to customer... (Press Enter to send, Shift+Enter for new line)" rows="1"></textarea>
+          <button id="btn-send-message" class="btn-send">
+            <span>Send</span>
+            <svg viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Right Sidebar: Customer Meta Details -->
+    <aside class="sidebar-details" id="sidebar-details">
+      <h4>Customer Details</h4>
+      <div class="meta-group">
+        <div class="meta-item">
+          <span class="meta-label">Customer ID</span>
+          <span class="meta-value" id="meta-customer-id">-</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Full Name</span>
+          <span class="meta-value" id="meta-customer-name">-</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Email Address</span>
+          <span class="meta-value" id="meta-customer-email">Not provided</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Current Page (Odoo URL)</span>
+          <span class="meta-value" id="meta-customer-page">-</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value" id="meta-customer-status">-</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Session Started</span>
+          <span class="meta-value" id="meta-customer-started">-</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

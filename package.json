@@ -1,0 +1,18 @@
+{
+  "name": "liveagent-system",
+  "version": "1.0.0",
+  "description": "Real-time Live Agent Customer Support Chat System with Embeddable Widget and Admin Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["liveagent", "chat", "customer-support", "socketio", "odoo"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveAgent - Customer Website Demo</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --bg: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: var(--gray);
+      font-weight: 500;
+      font-size: 14px;
+    }
+    nav a:hover { color: var(--primary); }
+    .hero {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #0f172a;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: white;
+      color: var(--dark);
+      border: 1px solid #cbd5e1;
+    }
+    .btn-outline:hover {
+      background: #f1f5f9;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px 60px 24px;
+    }
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      text-align: left;
+    }
+    .card-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+    .card p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+    .banner {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto 40px auto;
+      max-width: 950px;
+      text-align: left;
+    }
+    .banner h4 {
+      color: #1e40af;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .banner ol {
+      margin-left: 20px;
+      color: #1e3a8a;
+      font-size: 14px;
+    }
+    .banner li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Website Header -->
+  <header>
+    <div class="logo">
+      <span>💬</span> LiveAgent Customer Demo
+    </div>
+    <nav>
+      <a href="/admin" target="_blank" style="color: #2563eb; font-weight: bold;">👉 Open Admin Portal</a>
+      <a href="/api/health" target="_blank">API Health</a>
+      <a href="#how-it-works">How It Works</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Real-Time Customer Live Chat</h1>
+    <p>
+      This demo simulates your website (e.g. Odoo or audio website). The live chat widget is active in the bottom-right corner!
+    </p>
+
+    <div class="cta-buttons">
+      <a href="/admin" target="_blank" class="btn btn-primary">
+        <span>👨‍💼 Open Live Agent Dashboard</span>
+      </a>
+      <button onclick="document.getElementById('law-launcher').click()" class="btn btn-outline">
+        <span>💬 Click Chat Widget (Bottom Right)</span>
+      </button>
+    </div>
+
+    <!-- Quick test instructions -->
+    <div class="banner">
+      <h4>⚡ How to Test Pair Programming in 2 Minutes:</h4>
+      <ol>
+        <li>Click <strong>"Open Live Agent Dashboard"</strong> above to open the Admin Portal in a new tab or side-by-side window.</li>
+        <li>On this page, click the <strong>blue chat bubble in the bottom right corner</strong>.</li>
+        <li>Type a message (e.g., <em>"Hello, I need help with my order!"</em>) and press Enter.</li>
+        <li>Switch to the Admin tab — you will hear an <strong>audio chime notification</strong> and see the customer message appear live!</li>
+        <li>Reply as the agent — the customer will receive the reply instantly with zero lag.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <section class="cards-grid" id="how-it-works">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Real-Time WebSockets</h3>
+      <p>Bidirectional Socket.IO pipeline pushes customer messages and agent replies in milliseconds.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔔</div>
+      <h3>Audio Notifications</h3>
+      <p>Audible chime alerts support agents instantly whenever a customer texts, ensuring no lead is missed.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h3>1-Line Odoo Integration</h3>
+      <p>Easily embed the widget onto your Odoo website, Urdu audio site, or any HTML/CMS platform.</p>
+    </div>
+  </section>
+
+  <!-- EMBEDDABLE LIVE CHAT WIDGET -->
+  <script 
+    src="/widget/widget.js" 
+    data-server="" 
+    data-title="Customer Support" 
+    data-color="#0084ff">
+  </script>
+
+</body>
+</html>

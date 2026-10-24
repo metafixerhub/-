@@ -1,0 +1,481 @@
+/* LiveAgent Embeddable Widget Stylesheet
+   Namespaced with .law- prefix to avoid CSS conflicts with Odoo and other CMSs
+*/
+
+:root {
+  --law-primary: #0084ff;
+  --law-primary-hover: #0073e6;
+  --law-bg: #ffffff;
+  --law-text: #1c1e21;
+  --law-text-muted: #65676b;
+  --law-bubble-customer: #0084ff;
+  --law-bubble-agent: #f0f2f5;
+  --law-border: #e4e6eb;
+  --law-radius: 16px;
+  --law-shadow: 0 12px 36px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Launcher Floating Button */
+#law-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0084ff 0%, #00c6ff 100%);
+  box-shadow: 0 8px 24px rgba(0, 132, 255, 0.4);
+  cursor: pointer;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+  user-select: none;
+}
+
+#law-launcher:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 28px rgba(0, 132, 255, 0.5);
+}
+
+#law-launcher svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+  transition: transform 0.2s ease;
+}
+
+#law-launcher .law-icon-close {
+  display: none;
+}
+
+#law-launcher.law-active .law-icon-chat {
+  display: none;
+}
+
+#law-launcher.law-active .law-icon-close {
+  display: block;
+}
+
+/* Badge for unread messages */
+#law-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ff3b30;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  animation: law-pulse 1.8s infinite;
+}
+
+@keyframes law-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Chat Container Window */
+#law-container {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 560px;
+  max-height: calc(100vh - 120px);
+  background: var(--law-bg);
+  border-radius: var(--law-radius);
+  box-shadow: var(--law-shadow);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 999998;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  opacity: 0;
+  transform: translateY(16px) scale(0.97);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#law-container.law-visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Chat Header */
+.law-header {
+  background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%);
+  color: #fff;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.law-agent-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.law-avatar-wrapper {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.law-avatar-wrapper svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+.law-status-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #34c759;
+  border: 2px solid #0084ff;
+}
+
+.law-title-wrap h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.law-title-wrap p {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  opacity: 0.85;
+  color: #e5f2ff;
+}
+
+.law-header-actions button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.law-header-actions button:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* User identity bar / quick setting */
+.law-user-bar {
+  background: #f7f9fa;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--law-text-muted);
+  border-bottom: 1px solid var(--law-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.law-user-bar span {
+  font-weight: 500;
+  color: var(--law-text);
+}
+
+.law-user-edit-btn {
+  color: var(--law-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* Messages Scrollable Body */
+.law-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fbfbfd;
+  scroll-behavior: smooth;
+}
+
+.law-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.law-messages::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+/* Message Items */
+.law-msg-row {
+  display: flex;
+  flex-direction: column;
+  max-width: 82%;
+  animation: law-fadeIn 0.2s ease;
+}
+
+@keyframes law-fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.law-msg-row.law-customer {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.law-msg-row.law-agent {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.law-msg-bubble {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.law-customer .law-msg-bubble {
+  background: var(--law-bubble-customer);
+  color: #ffffff;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.law-agent .law-msg-bubble {
+  background: var(--law-bubble-agent);
+  color: var(--law-text);
+  border-radius: 16px 16px 16px 4px;
+  border: 1px solid #eef0f3;
+}
+
+.law-msg-meta {
+  font-size: 10px;
+  color: var(--law-text-muted);
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+/* System Messages */
+.law-msg-row.law-system {
+  align-self: center;
+  align-items: center;
+  max-width: 90%;
+  margin: 6px 0;
+}
+
+.law-msg-row.law-system .law-msg-bubble {
+  background: #eef2f6;
+  color: #4b5563;
+  font-size: 11.5px;
+  border-radius: 12px;
+  padding: 5px 12px;
+  text-align: center;
+}
+
+/* Typing Indicator */
+.law-typing {
+  align-self: flex-start;
+  background: var(--law-bubble-agent);
+  border: 1px solid #eef0f3;
+  border-radius: 14px;
+  padding: 8px 12px;
+  display: none;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+}
+
+.law-typing.law-active {
+  display: flex;
+}
+
+.law-typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #8e8e93;
+  border-radius: 50%;
+  animation: law-bounce 1.3s infinite;
+}
+
+.law-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.law-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes law-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+/* Message Input Area */
+.law-footer {
+  padding: 12px 14px;
+  border-top: 1px solid var(--law-border);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.law-footer textarea {
+  flex: 1;
+  border: 1px solid #dcdfe4;
+  border-radius: 20px;
+  padding: 9px 14px;
+  font-size: 13.5px;
+  font-family: inherit;
+  resize: none;
+  max-height: 90px;
+  min-height: 22px;
+  line-height: 1.35;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.law-footer textarea:focus {
+  border-color: var(--law-primary);
+}
+
+.law-send-btn {
+  background: var(--law-primary);
+  border: none;
+  color: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.law-send-btn:hover {
+  background: var(--law-primary-hover);
+  transform: scale(1.05);
+}
+
+.law-send-btn:active {
+  transform: scale(0.95);
+}
+
+.law-send-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  margin-left: 2px;
+}
+
+/* User Edit Modal Overlay */
+.law-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.law-modal-overlay.law-modal-open {
+  display: flex;
+}
+
+.law-modal-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.law-modal-box h4 {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  color: var(--law-text);
+}
+
+.law-modal-box input {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--law-border);
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.law-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.law-modal-actions button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.law-btn-cancel {
+  background: #f0f2f5;
+  color: var(--law-text);
+}
+
+.law-btn-save {
+  background: var(--law-primary);
+  color: #fff;
+}
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 480px) {
+  #law-container {
+    bottom: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
