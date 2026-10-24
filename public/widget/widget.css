@@ -1,30 +1,34 @@
 /* LiveAgent Embeddable Widget Stylesheet
-   Namespaced with .law- prefix to avoid CSS conflicts with Odoo and other CMSs
+   Theme: Purple & Light Purple with Logo & Real-time Presence
+   Namespaced with .law- prefix to prevent conflicts with Odoo & external websites
 */
 
 :root {
-  --law-primary: #0084ff;
-  --law-primary-hover: #0073e6;
+  --law-primary: #7c3aed;
+  --law-primary-hover: #6d28d9;
+  --law-light-purple: #f5f3ff;
+  --law-soft-purple: #ede9fe;
+  --law-border-purple: #ddd6fe;
   --law-bg: #ffffff;
-  --law-text: #1c1e21;
-  --law-text-muted: #65676b;
-  --law-bubble-customer: #0084ff;
-  --law-bubble-agent: #f0f2f5;
-  --law-border: #e4e6eb;
-  --law-radius: 16px;
-  --law-shadow: 0 12px 36px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --law-text: #1e1b4b;
+  --law-text-muted: #6b7280;
+  --law-bubble-customer: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  --law-bubble-agent: #f3f4f6;
+  --law-border: #e5e7eb;
+  --law-radius: 18px;
+  --law-shadow: 0 16px 40px rgba(124, 58, 237, 0.18), 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-/* Launcher Floating Button */
+/* Floating Launcher Button */
 #law-launcher {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  width: 60px;
-  height: 60px;
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0084ff 0%, #00c6ff 100%);
-  box-shadow: 0 8px 24px rgba(0, 132, 255, 0.4);
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  box-shadow: 0 8px 26px rgba(124, 58, 237, 0.45);
   cursor: pointer;
   z-index: 999999;
   display: flex;
@@ -37,20 +41,32 @@
 
 #law-launcher:hover {
   transform: scale(1.08);
-  box-shadow: 0 12px 28px rgba(0, 132, 255, 0.5);
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.55);
+}
+
+/* Logo image inside launcher */
+.law-launcher-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
 }
 
 #law-launcher svg {
   width: 28px;
   height: 28px;
   fill: currentColor;
-  transition: transform 0.2s ease;
 }
 
 #law-launcher .law-icon-close {
   display: none;
 }
 
+#law-launcher.law-active .law-launcher-img,
 #law-launcher.law-active .law-icon-chat {
   display: none;
 }
@@ -64,7 +80,7 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  background: #ff3b30;
+  background: #ef4444;
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -92,7 +108,7 @@
   right: 24px;
   width: 380px;
   max-width: calc(100vw - 32px);
-  height: 560px;
+  height: 570px;
   max-height: calc(100vh - 120px);
   background: var(--law-bg);
   border-radius: var(--law-radius);
@@ -105,6 +121,7 @@
   opacity: 0;
   transform: translateY(16px) scale(0.97);
   transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(124, 58, 237, 0.15);
 }
 
 #law-container.law-visible {
@@ -113,9 +130,9 @@
   transform: translateY(0) scale(1);
 }
 
-/* Chat Header */
+/* Chat Header - Purple Gradient */
 .law-header {
-  background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
   color: #fff;
   padding: 16px 18px;
   display: flex;
@@ -131,30 +148,39 @@
 
 .law-avatar-wrapper {
   position: relative;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
 }
 
-.law-avatar-wrapper svg {
-  width: 24px;
-  height: 24px;
-  fill: #fff;
+.law-avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
+/* Online / Offline Status Dot */
 .law-status-dot {
   position: absolute;
-  bottom: 1px;
-  right: 1px;
-  width: 11px;
-  height: 11px;
+  bottom: 0px;
+  right: 0px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #34c759;
-  border: 2px solid #0084ff;
+  background: #10b981; /* Green when online */
+  border: 2px solid #ffffff;
+  transition: background 0.3s ease;
+}
+
+.law-status-dot.law-offline {
+  background: #9ca3af; /* Gray when offline */
 }
 
 .law-title-wrap h4 {
@@ -162,13 +188,17 @@
   font-size: 15px;
   font-weight: 600;
   color: #ffffff;
+  line-height: 1.2;
 }
 
 .law-title-wrap p {
-  margin: 2px 0 0 0;
+  margin: 3px 0 0 0;
   font-size: 12px;
-  opacity: 0.85;
-  color: #e5f2ff;
+  opacity: 0.92;
+  color: #ede9fe;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .law-header-actions button {
@@ -187,24 +217,48 @@
 
 .law-header-actions button:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* User identity bar / quick setting */
+/* Offline Banner Notice */
+.law-offline-banner {
+  background: #fffbeb;
+  border-bottom: 1px solid #fde68a;
+  color: #92400e;
+  padding: 8px 14px;
+  font-size: 11.5px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.law-offline-banner.law-show {
+  display: flex;
+}
+
+.law-offline-banner svg {
+  width: 16px;
+  height: 16px;
+  fill: #d97706;
+  flex-shrink: 0;
+}
+
+/* Friendly User Greeting & Identity Bar */
 .law-user-bar {
-  background: #f7f9fa;
+  background: var(--law-light-purple);
   padding: 8px 16px;
   font-size: 12px;
-  color: var(--law-text-muted);
-  border-bottom: 1px solid var(--law-border);
+  color: #5b21b6;
+  border-bottom: 1px solid var(--law-soft-purple);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .law-user-bar span {
-  font-weight: 500;
-  color: var(--law-text);
+  font-weight: 600;
+  color: var(--law-primary);
 }
 
 .law-user-edit-btn {
@@ -215,6 +269,7 @@
   font-size: 11px;
   text-decoration: underline;
   padding: 0;
+  font-weight: 500;
 }
 
 /* Messages Scrollable Body */
@@ -225,16 +280,16 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #fbfbfd;
+  background: #faf8ff;
   scroll-behavior: smooth;
 }
 
 .law-messages::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 .law-messages::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--law-border-purple);
   border-radius: 3px;
 }
 
@@ -272,13 +327,15 @@
   background: var(--law-bubble-customer);
   color: #ffffff;
   border-radius: 16px 16px 4px 16px;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
 .law-agent .law-msg-bubble {
-  background: var(--law-bubble-agent);
+  background: #ffffff;
   color: var(--law-text);
   border-radius: 16px 16px 16px 4px;
-  border: 1px solid #eef0f3;
+  border: 1px solid var(--law-border-purple);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .law-msg-meta {
@@ -288,28 +345,30 @@
   padding: 0 4px;
 }
 
-/* System Messages */
+/* System Messages & 1-minute notices */
 .law-msg-row.law-system {
   align-self: center;
   align-items: center;
-  max-width: 90%;
+  max-width: 92%;
   margin: 6px 0;
 }
 
 .law-msg-row.law-system .law-msg-bubble {
-  background: #eef2f6;
-  color: #4b5563;
-  font-size: 11.5px;
+  background: var(--law-soft-purple);
+  color: #4c1d95;
+  font-size: 12px;
   border-radius: 12px;
-  padding: 5px 12px;
+  padding: 8px 14px;
   text-align: center;
+  border: 1px solid var(--law-border-purple);
+  line-height: 1.4;
 }
 
 /* Typing Indicator */
 .law-typing {
   align-self: flex-start;
-  background: var(--law-bubble-agent);
-  border: 1px solid #eef0f3;
+  background: #ffffff;
+  border: 1px solid var(--law-border-purple);
   border-radius: 14px;
   padding: 8px 12px;
   display: none;
@@ -325,7 +384,7 @@
 .law-typing-dot {
   width: 6px;
   height: 6px;
-  background: #8e8e93;
+  background: var(--law-primary);
   border-radius: 50%;
   animation: law-bounce 1.3s infinite;
 }
@@ -341,7 +400,7 @@
 /* Message Input Area */
 .law-footer {
   padding: 12px 14px;
-  border-top: 1px solid var(--law-border);
+  border-top: 1px solid var(--law-border-purple);
   background: #ffffff;
   display: flex;
   align-items: center;
@@ -350,7 +409,7 @@
 
 .law-footer textarea {
   flex: 1;
-  border: 1px solid #dcdfe4;
+  border: 1px solid var(--law-border-purple);
   border-radius: 20px;
   padding: 9px 14px;
   font-size: 13.5px;
@@ -360,32 +419,34 @@
   min-height: 22px;
   line-height: 1.35;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
 
 .law-footer textarea:focus {
   border-color: var(--law-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
 }
 
 .law-send-btn {
-  background: var(--law-primary);
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
   border: none;
   color: #ffffff;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
   flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
 }
 
 .law-send-btn:hover {
-  background: var(--law-primary-hover);
-  transform: scale(1.05);
+  transform: scale(1.06);
+  box-shadow: 0 6px 14px rgba(124, 58, 237, 0.4);
 }
 
 .law-send-btn:active {
@@ -406,7 +467,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(30, 27, 75, 0.5);
   display: none;
   align-items: center;
   justify-content: center;
@@ -420,10 +481,10 @@
 
 .law-modal-box {
   background: #fff;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 22px;
   width: 100%;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
 }
 
 .law-modal-box h4 {
@@ -434,12 +495,17 @@
 
 .law-modal-box input {
   width: 100%;
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  border: 1px solid var(--law-border);
-  border-radius: 6px;
+  padding: 9px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--law-border-purple);
+  border-radius: 8px;
   font-size: 13px;
   box-sizing: border-box;
+  outline: none;
+}
+
+.law-modal-box input:focus {
+  border-color: var(--law-primary);
 }
 
 .law-modal-actions {
@@ -450,15 +516,16 @@
 }
 
 .law-modal-actions button {
-  padding: 6px 14px;
-  border-radius: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
   border: 1px solid transparent;
+  font-weight: 500;
 }
 
 .law-btn-cancel {
-  background: #f0f2f5;
+  background: #f3f4f6;
   color: var(--law-text);
 }
 

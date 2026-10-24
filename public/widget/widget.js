@@ -1,6 +1,7 @@
 /**
  * LiveAgent - Customer Support Chat Widget
  * Embeddable on any website (Odoo, WordPress, Shopify, Custom HTML)
+ * Features: Purple theme, Logo integration, Live Admin Presence, 1-Min Auto Response
  */
 
 (function () {
@@ -18,11 +19,13 @@
 
   const primaryColor = (scriptTag && scriptTag.getAttribute('data-color'))
     || (window.LiveAgentConfig && window.LiveAgentConfig.primaryColor)
-    || '#0084ff';
+    || '#7c3aed'; // Purple
 
   const widgetTitle = (scriptTag && scriptTag.getAttribute('data-title'))
     || (window.LiveAgentConfig && window.LiveAgentConfig.title)
     || 'Customer Support';
+
+  const logoUrl = `${serverUrl}/widget/logo.jpg`;
 
   // Inject CSS if not already present
   if (!document.getElementById('law-widget-css')) {
@@ -58,6 +61,7 @@
   let unreadCount = 0;
   let socket = null;
   let typingTimeout = null;
+  let isAgentOnline = false;
 
   // Sound generator using Web Audio API (Reliable, no external audio files needed)
   function playNotificationSound() {
@@ -97,13 +101,14 @@
 
   // Build Widget DOM elements
   function createWidgetElements() {
-    // 1. Launcher button
+    // 1. Launcher button with Logo
     const launcher = document.createElement('div');
     launcher.id = 'law-launcher';
     launcher.setAttribute('aria-label', 'Open Live Support Chat');
     launcher.innerHTML = `
       <div id="law-badge">0</div>
-      <svg class="law-icon-chat" viewBox="0 0 24 24">
+      <img src="${logoUrl}" alt="Support Logo" class="law-launcher-img" onerror="this.style.display='none'; document.getElementById('law-fallback-icon').style.display='block';">
+      <svg id="law-fallback-icon" class="law-icon-chat" viewBox="0 0 24 24" style="display:none;">
         <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
         <circle cx="8" cy="10" r="1.5"/>
         <circle cx="12" cy="10" r="1.5"/>
@@ -121,14 +126,12 @@
       <div class="law-header">
         <div class="law-agent-info">
           <div class="law-avatar-wrapper">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-            <span class="law-status-dot"></span>
+            <img src="${logoUrl}" alt="Support Agent" class="law-avatar-img">
+            <span class="law-status-dot law-offline" id="law-agent-dot"></span>
           </div>
           <div class="law-title-wrap">
             <h4>${widgetTitle}</h4>
-            <p>Active & Online • We reply instantly</p>
+            <p id="law-status-text">⚪ Checking status...</p>
           </div>
         </div>
         <div class="law-header-actions">
@@ -138,6 +141,14 @@
             </svg>
           </button>
         </div>
+      </div>
+
+      <!-- Offline Notice Banner -->
+      <div class="law-offline-banner" id="law-offline-banner">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span>Agents are currently offline. Please leave your message & email, or try again in a few minutes later!</span>
       </div>
 
       <div class="law-user-bar">
@@ -156,7 +167,7 @@
       </div>
 
       <div class="law-footer">
-        <textarea id="law-input" placeholder="Write a message..." rows="1"></textarea>
+        <textarea id="law-input" placeholder="Type your message... (Make it a good day!)" rows="1"></textarea>
         <button id="law-send" class="law-send-btn" title="Send message">
           <svg viewBox="0 0 24 24">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -182,6 +193,34 @@
     document.body.appendChild(container);
 
     setupEventListeners(launcher, container);
+  }
+
+  // Update Agent Online/Offline state UI
+  function updateAgentPresence(online) {
+    isAgentOnline = Boolean(online);
+    const dot = document.getElementById('law-agent-dot');
+    const text = document.getElementById('law-status-text');
+    const banner = document.getElementById('law-offline-banner');
+
+    if (dot) {
+      if (isAgentOnline) {
+        dot.classList.remove('law-offline');
+      } else {
+        dot.classList.add('law-offline');
+      }
+    }
+
+    if (text) {
+      text.textContent = isAgentOnline ? '🟢 Online • We reply instantly' : '⚪ Offline • Leave a message';
+    }
+
+    if (banner) {
+      if (isAgentOnline) {
+        banner.classList.remove('law-show');
+      } else {
+        banner.classList.add('law-show');
+      }
+    }
   }
 
   function setupEventListeners(launcher, container) {
@@ -361,17 +400,27 @@
       });
     });
 
+    // Receive agent online/offline status updates
+    socket.on('agent_status', (data) => {
+      if (data && typeof data.isOnline !== 'undefined') {
+        updateAgentPresence(data.isOnline);
+      }
+    });
+
     socket.on('chat_history', (data) => {
       const list = document.getElementById('law-messages-list');
       if (list) list.innerHTML = '';
       if (data && data.messages) {
         data.messages.forEach(appendMessage);
       }
+      if (data && typeof data.isAgentOnline !== 'undefined') {
+        updateAgentPresence(data.isAgentOnline);
+      }
     });
 
     socket.on('new_message', (msg) => {
       appendMessage(msg);
-      if (msg.sender === 'agent') {
+      if (msg.sender === 'agent' || msg.sender === 'system') {
         playNotificationSound();
         if (!isOpen) {
           unreadCount++;
